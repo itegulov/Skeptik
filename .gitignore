@@ -4,6 +4,8 @@ project/target/
 .classpath
 .project
 .cache
+.idea
+*.iml
 .settings
 .history
 *~
@@ -15,7 +17,6 @@ experiments/compressor/slice*
 *.out
 *.snm
 *.toc
-*.pdf
 *.lst
 *.log
 *.bbl

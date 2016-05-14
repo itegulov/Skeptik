@@ -22,11 +22,11 @@ object UnitPropagation {
     *         exp or were derived from exp by unit propagation,
     *         resulting expression after applying all possible unit propagation)
     */
-  def apply(exp: Set[Sequent]): (Seq[E], Seq[E], Set[Sequent]) = {
+  def apply(exp: Iterable[Sequent]): (Seq[E], Seq[E], Set[Sequent]) = {
     val unitClauses = ArrayBuffer.empty[(Boolean, E)]
     val eliminatedUnitClauses = ArrayBuffer.empty[E]
     val eliminatedNegatedUnitClauses = ArrayBuffer.empty[E]
-    var result: Set[Sequent] = exp
+    var result: Set[Sequent] = exp.toSet
     Breaks.breakable {
       while (true) {
         for (clause <- result) if (isUnit(clause))

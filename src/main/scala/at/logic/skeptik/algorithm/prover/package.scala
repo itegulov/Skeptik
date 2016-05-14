@@ -17,7 +17,7 @@ package object prover {
     if (clause.ant.size == 1) (true, clause.ant.head) else (false, clause.suc.head)
 
   // Eliminates one unit clause `negate:unit` in `exp`
-  def eliminate(exp: Set[Sequent], negated: Boolean, unit: E): Set[Sequent] = {
+  def eliminate(exp: Iterable[Sequent], negated: Boolean, unit: E): Set[Sequent] = {
     val newResult = mutable.Set.empty[Sequent]
     for (clause <- exp) {
       if (!(!negated && clause.sucContains(unit)) && !(negated && clause.antContains(unit))) {

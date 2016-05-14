@@ -1,7 +1,7 @@
 package at.logic.skeptik.algorithm.prover
 
 import at.logic.skeptik.expression.{Var, i}
-import at.logic.skeptik.judgment.immutable.SetSequent
+import at.logic.skeptik.judgment.immutable.{SeqSequent, SetSequent}
 import org.junit.runner.RunWith
 import org.specs2.mutable.SpecificationWithJUnit
 import org.specs2.runner.JUnitRunner
@@ -25,7 +25,7 @@ class DPLLSpecification extends SpecificationWithJUnit {
         new SetSequent(Set(b, c), Set.empty),
         new SetSequent(Set(d), Set(c))
       )
-      prove(exp) shouldEqual Some(Seq(a, b), Seq(c, d))
+      prove(exp) shouldEqual Some(new SeqSequent(Seq(c, d), Seq(a, b)))
     }
 
     "not prove" in {

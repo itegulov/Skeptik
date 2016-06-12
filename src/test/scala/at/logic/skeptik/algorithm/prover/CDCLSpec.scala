@@ -1,5 +1,6 @@
 package at.logic.skeptik.algorithm.prover
 
+import at.logic.skeptik.algorithm.prover.choosing.VSIDSLiteralChooser
 import at.logic.skeptik.expression.{Var, i}
 import org.junit.runner.RunWith
 import org.specs2.mutable.SpecificationWithJUnit
@@ -22,7 +23,10 @@ class CDCLSpec extends SpecificationWithJUnit {
   private val y = new Var("Y", i)
   private val z = new Var("Z", i)
 
-  private def test(clauses: Clause*) = CDCL.isSatisfiable(new CNF(ArrayBuffer(clauses:_*)))
+  private def test(clauses: Clause*) = {
+    val cnf = new CNF(ArrayBuffer(clauses:_*))
+    CDCL.isSatisfiable(cnf, new VSIDSLiteralChooser(cnf))
+  }
 
   "CDCL" should {
     "find satisfiable" in {

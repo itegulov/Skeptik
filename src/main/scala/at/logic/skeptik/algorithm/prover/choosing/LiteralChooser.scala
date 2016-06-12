@@ -1,6 +1,6 @@
 package at.logic.skeptik.algorithm.prover.choosing
 
-import at.logic.skeptik.algorithm.prover.Literal
+import at.logic.skeptik.algorithm.prover._
 import at.logic.skeptik.algorithm.prover.structure.mutable.CNF
 
 /**
@@ -17,4 +17,18 @@ trait LiteralChooser {
     *         Some(literal), if literal should be decided
     */
   def chooseLiteral(cnf: CNF): Option[Literal]
+
+  /**
+    * Handle the addition of a new clause
+    *
+    * @param clause to be added
+    */
+  def clauseAdded(clause: Clause): Unit
+
+  /**
+    * Handle the unsetting of a literal
+    *
+    * @param literal to be unsetted
+    */
+  def unsetLiteral(literal: Literal): Unit
 }

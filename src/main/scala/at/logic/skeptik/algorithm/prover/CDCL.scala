@@ -27,6 +27,7 @@ object CDCL {
       */
     def undo(): Unit = {
       for (literal <- levels.last.varAssessment) {
+        literalChooser.unsetLiteral(literal)
         cnf.assignment -= literal
       }
       levels.remove(levels.size - 1)
@@ -79,7 +80,9 @@ object CDCL {
               }
             }
 
-            cnf += conflictAnalyser.learnConflictClause(levels)
+            val newClause = conflictAnalyser.learnConflictClause(levels)
+            literalChooser.clauseAdded(newClause)
+            cnf += newClause
 
             val flipLiteral = !levels.last.literal
             undo()

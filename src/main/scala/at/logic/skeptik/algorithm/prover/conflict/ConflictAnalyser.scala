@@ -1,6 +1,7 @@
 package at.logic.skeptik.algorithm.prover.conflict
 
-import at.logic.skeptik.algorithm.prover.Clause
+import at.logic.skeptik.algorithm.prover._
+import at.logic.skeptik.algorithm.prover.structure.mutable
 import at.logic.skeptik.algorithm.prover.util.DecisionLevel
 
 /**
@@ -15,5 +16,5 @@ trait ConflictAnalyser {
     * @param levels decision levels
     * @return learnt clause
     */
-  def learnConflictClause(levels: Seq[DecisionLevel]): Clause
+  def learnConflictClause(cnf: mutable.CNF, conflictLiterals: Seq[Literal], levels: Seq[DecisionLevel]): Clause
 }

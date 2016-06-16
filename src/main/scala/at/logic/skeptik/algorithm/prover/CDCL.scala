@@ -46,24 +46,24 @@ object CDCL {
     /**
       * Applies unit propagation technique to elements in unitPropagationQueue.
       *
-      * @return true, if there is no conflicts after propagating all unit clauses
-      *         false, if there is at least one conflict
+      * @return None, if there is no conflicts after propagating all unit clauses
+      *         Some(literal), if there is a conflict derived from literal and !literal
       */
-    def propagate(): Boolean = {
+    def propagate(): Option[Seq[Literal]] = {
       while (unitPropagationQueue.nonEmpty) {
         val propagationLiteral = unitPropagationQueue.dequeue()
         if (cnf.assignment contains !propagationLiteral) {
           // Found a conflict
           unitPropagationQueue.clear()
-          return false
+          return Some(propagationLiteral)
         } else {
           assignLiteral(propagationLiteral) // Ensure that unit clause literal is true
         }
       }
-      true
+      None
     }
 
-    if (!propagate()) {
+    if (propagate().isDefined) {
       return false // If there is a conflict from the very start -> CNF is unsatisfiable
     }
     var chosen = literalChooser.chooseLiteral(cnf)
@@ -72,24 +72,25 @@ object CDCL {
         case Some(literal) =>
           levels += new DecisionLevel(literal)
           assignLiteral(literal)
-          if (!propagate()) { // Conflict is derived
-            while (levels.last.literal.negated) { // Find first level which hasn't been processed twice
-              undo()
-              if (levels.isEmpty) {
-                return false // All previous levels where processed twice -> CNF is unsatisfiable
+          propagate() match {
+            case Some(conflictLiteral) =>
+              while (levels.last.literal.negated) { // Find first level which hasn't been processed twice
+                undo()
+                if (levels.isEmpty) {
+                  return false // All previous levels where processed twice -> CNF is unsatisfiable
+                }
               }
-            }
 
-            val newClause = conflictAnalyser.learnConflictClause(levels)
-            literalChooser.clauseAdded(newClause)
-            cnf += newClause
+              val newClause = conflictAnalyser.learnConflictClause(cnf, conflictLiteral, levels)
+              literalChooser.clauseAdded(newClause)
+              cnf += newClause
 
-            val flipLiteral = !levels.last.literal
-            undo()
-            levels += new DecisionLevel(flipLiteral)
-            Some(flipLiteral)
-          } else {
-            literalChooser.chooseLiteral(cnf)
+              val flipLiteral = !levels.last.literal
+              undo()
+              levels += new DecisionLevel(flipLiteral)
+              Some(flipLiteral)
+            case None =>
+              literalChooser.chooseLiteral(cnf)
           }
         case None => return true // There is no literal which can be chose -> CNF is satisfiable
       }

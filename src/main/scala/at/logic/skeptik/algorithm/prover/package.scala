@@ -31,6 +31,20 @@ package object prover {
     def last: Literal = apply(literals.length - 1)
 
     def isUnit: Boolean = clause.width == 1
+
+    def resolve(other: Clause): Option[Clause] = {
+      clause.ant.find(other.suc contains _) match {
+        case Some(unit) =>
+          val result = (unit -: (clause union other)) - unit
+          Some(result)
+        case None => clause.suc.find(other.ant contains _) match {
+          case Some(unit) =>
+            val result = (unit -: (clause union other)) - unit
+            Some(result)
+          case None => None
+        }
+      }
+    }
   }
 
   implicit class LiteralOperations(literal: Literal) {

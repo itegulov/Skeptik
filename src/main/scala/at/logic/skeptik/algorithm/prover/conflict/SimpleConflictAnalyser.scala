@@ -1,6 +1,7 @@
 package at.logic.skeptik.algorithm.prover.conflict
 
-import at.logic.skeptik.algorithm.prover.{Clause, _}
+import at.logic.skeptik.algorithm.prover.structure.mutable
+import at.logic.skeptik.algorithm.prover._
 import at.logic.skeptik.algorithm.prover.util.DecisionLevel
 
 /**
@@ -9,6 +10,6 @@ import at.logic.skeptik.algorithm.prover.util.DecisionLevel
   * @author Daniyar Itegulov
   */
 object SimpleConflictAnalyser extends ConflictAnalyser{
-  override def learnConflictClause(levels: Seq[DecisionLevel]): Clause =
+  override def learnConflictClause(cnf: mutable.CNF, conflictLiterals: Seq[Literal], levels: Seq[DecisionLevel]): Clause =
     (Clause.empty /: levels.map(!_.literal)) (_ union _.toClause)
 }

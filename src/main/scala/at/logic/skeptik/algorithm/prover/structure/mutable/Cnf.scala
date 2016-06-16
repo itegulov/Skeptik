@@ -22,6 +22,11 @@ class CNF(val clauses: ArrayBuffer[Clause]) {
   val variables = clauses.flatMap(_.literals.map(_.unit))
 
   /**
+    * Shows what literals were used to achieve this
+    */
+  val implicationGraph = mutable.Map.empty[Literal, Seq[(Literal, Clause)]]
+
+  /**
     * Represents two-watched literal scheme:
     * for each literal we know what clauses have watchers set
     * to this literal.
@@ -78,7 +83,9 @@ class CNF(val clauses: ArrayBuffer[Clause]) {
           sentinels(nonSentinelLiteral) += clause
         case None =>
           otherLiterals.find(sentinels(_) contains clause) match {
-            case Some(sentinel) => result += sentinel
+            case Some(sentinel) =>
+              result += sentinel
+              implicationGraph(sentinel) = otherLiterals.zip(Stream.continually(clause))
             case None =>
           }
       }
